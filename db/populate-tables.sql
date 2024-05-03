@@ -401,5 +401,6 @@ INSERT INTO HASQ VALUES('calzoni in padella (senza lievito)', 'basilico', 'q.b.'
 INSERT INTO HASQ VALUES('calzoni in padella (senza lievito)', 'olio di oliva', 'q.b.');
 
 
-SELECT name from INGREDIENTS;
+SELECT name from RECIPES;
+
 
