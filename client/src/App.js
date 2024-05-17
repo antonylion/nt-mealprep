@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './App.css';
 
 function App() {
   const [storedData, setStoredData] = useState([]);
@@ -6,8 +7,6 @@ function App() {
   const [lunchesNames, setLunchesNames] = useState([]);
   const [dinnersNames, setDinnersNames] = useState([]);
   const [listIngredients, setListIngredients] = useState([]);
-  const [listIngredientsQuantities, setListIngredientsQuantities] = useState([]);
-  const [relativeRecipesForIngredients, setRelativeRecipesForIngredients] = useState([]); // TODO: discard this list, and convert the list of ingredients to a map data structure. ingredient:, quantity:, relative_recipe
 
   useEffect(() => {
     fetchRecipesNames();
@@ -18,7 +17,7 @@ function App() {
       const response = await fetch('http://localhost:5000/');
       const data = await response.json();
       setStoredData(data);
-      const rec_names = new Set(data.map(item => item[0])); //set to avoid duplicates
+      const rec_names = new Set(data.map(item => item[0])); // set to avoid duplicates
       setRecipesNames(Array.from(rec_names));
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -30,44 +29,38 @@ function App() {
   }, [recipesNames]);
 
   useEffect(() => {
-    setDinnersNames(recipesNames.slice(7, 14))
+    setDinnersNames(recipesNames.slice(7, 14));
   }, [recipesNames]);
 
   useEffect(() => {
-    // Extracting ingredients for lunchesNames
-    const ingredientsForLunches = storedData.filter(item => lunchesNames.includes(item[0])).map(item => item[1]);
-    setListIngredients(Array.from(ingredientsForLunches));
-  }, [listIngredients]);
+    // Extract ingredients for lunches and dinners and remove duplicates
+    const ingredientsForLunches = storedData
+      .filter(item => lunchesNames.includes(item[0]))
+      .map(item => item[1]);
+    
+    const ingredientsForDinners = storedData
+      .filter(item => dinnersNames.includes(item[0]))
+      .map(item => item[1]);
 
-  useEffect(() => {
-    // Extracting ingredients quantities for lunchesNames
-    const quantitiesForLunches = storedData.filter(item => lunchesNames.includes(item[0])).map(item => item[2]);
-    setListIngredientsQuantities(Array.from(quantitiesForLunches));
-  }, [listIngredientsQuantities]);
+    // Combine and deduplicate ingredients
+    const combinedIngredients = new Set([...ingredientsForLunches, ...ingredientsForDinners]);
+    setListIngredients(Array.from(combinedIngredients));
+  }, [lunchesNames, dinnersNames, storedData]);
 
-  useEffect(() => {
-    // Extracting ingredients for dinnersNames
-    const ingredientsForDinners = storedData.filter(item => dinnersNames.includes(item[0])).map(item => item[1]);
-    setListIngredients(prevList => [
-      ...prevList,
-      ...Array.from(ingredientsForDinners)
-    ]);
-  }, [listIngredients]);
+  const chunkArray = (array, chunkSize) => {
+    const chunks = [];
+    for (let i = 0; i < array.length; i += chunkSize) {
+      chunks.push(array.slice(i, i + chunkSize));
+    }
+    return chunks;
+  };
 
-  useEffect(() => {
-    // Extracting ingredients quantities for dinnersNames
-    const quantitiesForDinners = storedData.filter(item => dinnersNames.includes(item[0])).map(item => item[2]);
-    //const uniqueIngredients = Array.from(new Set(ingredientsForLunches));
-    setListIngredientsQuantities(prevList => [
-      ...prevList,
-      ...Array.from(quantitiesForDinners)
-    ]);
-  }, [listIngredientsQuantities]);
+  const ingredientsChunks = chunkArray(listIngredients, 10);
 
   return (
-    <div>
+    <div className="app">
       <h1>Il meal planner di Nella e Topino</h1>
-      <table>
+      <table className="meals-table">
         <thead>
           <tr>
             <th>Lunedì</th>
@@ -93,26 +86,19 @@ function App() {
         </tbody>
       </table>
       <h2>Lista della spesa</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>
-              Prodotto
-            </th>
-            <th>
-              Quantità
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {listIngredients.map((ingredient, index) => (
-            <tr>
-              <td key={index}>{ingredient}</td>
-              <td key={index}>{listIngredientsQuantities[index]}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <div className="ingredients-table">
+        {ingredientsChunks.map((chunk, columnIndex) => (
+          <table key={columnIndex}>
+            <tbody>
+              {chunk.map((ingredient, rowIndex) => (
+                <tr key={rowIndex}>
+                  <td>{ingredient}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ))}
+      </div>
     </div>
   );
 }

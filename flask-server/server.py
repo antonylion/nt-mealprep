@@ -3,6 +3,7 @@ from flask_cors import CORS
 import mysql.connector
 from config import db_config
 import json
+import pandas
 
 app = Flask(__name__)
 CORS(app)
