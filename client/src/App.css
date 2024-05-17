@@ -29,6 +29,7 @@ h1 {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: center;
+  cursor: pointer;
 }
 
 .meals-table th {
@@ -77,4 +78,9 @@ h1 {
   .ingredients-table table:last-child {
     margin-bottom: 0;
   }
+}
+
+/* Highlighting */
+.highlight {
+  background-color: #ffeb3b;
 }

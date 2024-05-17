@@ -7,6 +7,7 @@ function App() {
   const [lunchesNames, setLunchesNames] = useState([]);
   const [dinnersNames, setDinnersNames] = useState([]);
   const [listIngredients, setListIngredients] = useState([]);
+  const [selectedIngredient, setSelectedIngredient] = useState(null);
 
   useEffect(() => {
     fetchRecipesNames();
@@ -57,6 +58,20 @@ function App() {
 
   const ingredientsChunks = chunkArray(listIngredients, 10);
 
+  const handleIngredientClick = (ingredient) => {
+    setSelectedIngredient(ingredient === selectedIngredient ? null : ingredient);
+  };
+
+  const getRecipesForIngredient = (ingredient) => {
+    return storedData.filter(item => item[1] === ingredient).map(item => item[0]);
+  };
+
+  const isRecipeHighlighted = (recipe) => {
+    if (!selectedIngredient) return false;
+    const recipesForIngredient = getRecipesForIngredient(selectedIngredient);
+    return recipesForIngredient.includes(recipe);
+  };
+
   return (
     <div className="app">
       <h1>Il meal planner di Nella e Topino</h1>
@@ -75,12 +90,12 @@ function App() {
         <tbody>
           <tr>
             {lunchesNames.map((name, index) => (
-              <td key={index}>{name}</td>
+              <td key={index} className={isRecipeHighlighted(name) ? 'highlight' : ''}>{name}</td>
             ))}
           </tr>
           <tr>
             {dinnersNames.map((name, index) => (
-              <td key={index}>{name}</td>
+              <td key={index} className={isRecipeHighlighted(name) ? 'highlight' : ''}>{name}</td>
             ))}
           </tr>
         </tbody>
@@ -92,7 +107,12 @@ function App() {
             <tbody>
               {chunk.map((ingredient, rowIndex) => (
                 <tr key={rowIndex}>
-                  <td>{ingredient}</td>
+                  <td
+                    className={ingredient === selectedIngredient ? 'highlight' : ''}
+                    onClick={() => handleIngredientClick(ingredient)}
+                  >
+                    {ingredient}
+                  </td>
                 </tr>
               ))}
             </tbody>

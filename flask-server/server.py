@@ -18,12 +18,6 @@ def populate_planner():
     cursor = conn.cursor()
     cursor.execute("SELECT RECIPES.name, INGREDIENTS.name, HASQ.quantity from RECIPES, INGREDIENTS, HASQ where RECIPES.name=HASQ.name_recipe and INGREDIENTS.name=HASQ.name_ingredient ORDER BY RECIPES.name")
     data = cursor.fetchall()
-    #row_headers=[x[0] for x in cursor.description]
-    #cursor.close()
-    #conn.close()
-    #json_data = []
-    #for res in data:
-    #    json_data.append(dict(zip(row_headers, res)))
     return jsonify(data)
 
 def mock_planner():
