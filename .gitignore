@@ -1,5 +1,4 @@
 .DS_Store
 journal.txt
-config.py
 flask-server/__pycache__/*
 flask-server/.env
