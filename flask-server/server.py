@@ -16,7 +16,7 @@ CORS(app)
 def connect_to_database():
     return psycopg2.connect(**db_config)
 
-@app.route('/')
+@app.route('/ingredients')
 def populate_planner():
     conn = connect_to_database()
     cursor = conn.cursor()
