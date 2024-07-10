@@ -1,6 +1,6 @@
 import os
 
-HOST = os.environ['POSTGRES_HOST']
+HOST = os.environ['POSTGRES_DATABASE']
 #DATABASE = os.environ['POSTGRES_DATABASE']
 
 print(f"The secret is {HOST}")
