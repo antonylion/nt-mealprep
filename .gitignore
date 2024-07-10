@@ -2,3 +2,8 @@
 journal.txt
 flask-server/__pycache__/*
 flask-server/.env
+.vercel/
+flask-server/.env.development.local
+flask-server/node_modules/
+flask-server/package-lock.json
+flask-server/package.json
