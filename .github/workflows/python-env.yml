@@ -23,3 +23,10 @@ jobs:
 
     - name: Install dependencies
       run: pip install -r requirements.txt
+    
+    - name: Print environment variables
+      run: |
+        echo "POSTGRES_HOST: $POSTGRES_HOST"
+        echo "POSTGRES_DATABASE: $POSTGRES_DATABASE"
+        echo "POSTGRES_PASSWORD: $POSTGRES_PASSWORD"
+        echo "POSTGRES_USER: $POSTGRES_USER"
